@@ -1,0 +1,11 @@
+<models xmlns:xi="http://www.w3.org/2001/XInclude">
+  <model name="OUTBUF_VPR">
+    <input_ports>
+      <port name="IN" combinational_sink_ports="OUT"/>
+      <port name="TRI"/>
+    </input_ports>
+    <output_ports>
+      <port name="OUT"/>
+    </output_ports>
+  </model>
+</models>

@@ -637,7 +637,8 @@ endmodule
 
 module OUTBUF_VPR (
 	input IN,
+    input TRI,
 	output OUT
 );
-	assign OUT = IN;
+	assign OUT = (TRI) ? 1'bz : IN;
 endmodule

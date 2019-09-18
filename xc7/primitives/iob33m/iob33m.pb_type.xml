@@ -13,72 +13,20 @@
   <input name="PU_INT_EN" num_pins="1"/>
   <input name="T" num_pins="1"/>
   <output name="T_OUT" num_pins="1"/>
-  <mode name="NO_IBUF">
-    <xi:include href="inpad.pb_type.xml"/>
-    <interconnect>
-      <direct name="I" input="inpad.inpad" output="IOB33M.I"/>
-    </interconnect>
-  </mode>
-  <mode name="NO_OBUF">
-    <xi:include href="outpad.pb_type.xml"/>
-    <interconnect>
-      <direct name="O" input="IOB33M.O" output="outpad.outpad"/>
-    </interconnect>
-  </mode>
-  <mode name="IBUF">
-    <pb_type name="INBUF_VPR" blif_model=".subckt INBUF_VPR" num_pb="1">
-      <input name="DIFFI_IN" num_pins="1"/>
-      <input name="IBUFDISABLE" num_pins="1"/>
-      <input name="INTERMDISABLE" num_pins="1"/>
-      <input name="PAD" num_pins="1"/>
-      <output name="OUT" num_pins="1"/>
-      <delay_constant max="10e-12" in_port="PAD"  out_port="OUT"/>
-    </pb_type>
-    <xi:include href="inpad.pb_type.xml"/>
-    <interconnect>
-      <direct name="I" input="INBUF_VPR.OUT" output="IOB33M.I"/>
-      <direct name="to_inpad" input="inpad.inpad" output="INBUF_VPR.PAD"/>
-    </interconnect>
-  </mode>
-  <mode name="OBUF">
-    <pb_type name="OUTBUF_VPR" blif_model=".subckt OUTBUF_VPR" num_pb="1">
-      <input name="IN" num_pins="1"/>
-      <input name="TRI" num_pins="1"/>
-      <output name="OUT" num_pins="1"/>
-      <delay_constant max="10e-12" in_port="IN"  out_port="OUT"/>
-    </pb_type>
-    <xi:include href="outpad.pb_type.xml"/>
-    <interconnect>
-      <direct name="T" input="IOB33M.T" output="OUTBUF_VPR.TRI"/>
-      <direct name="O" input="IOB33M.O" output="OUTBUF_VPR.IN"/>
-      <direct name="to_outpad" input="OUTBUF_VPR.OUT" output="outpad.outpad">
-        <pack_pattern name="OUTBUF_to_outpad"/>
-      </direct>
-    </interconnect>
-  </mode>
-  <!--
-  <mode name="IOBUF">
-    <xi:include href="inpad.pb_type.xml"/>
-    <xi:include href="outpad.pb_type.xml"/>
-    <pb_type name="IOBUF_VPR" blif_model=".subckt INBUF_VPR" num_pb="1">
-      <input name="INBUF_DIFFI_IN" num_pins="1"/>
-      <input name="INBUF_IBUFDISABLE" num_pins="1"/>
-      <input name="INBUF_INTERMDISABLE" num_pins="1"/>
-      <input name="INBUF_PAD" num_pins="1"/>
-      <output name="INBUF_OUT" num_pins="1"/>
-      <input name="OUTBUF_IN" num_pins="1"/>
-      <input name="OUTBUF_TRI" num_pins="1"/>
-      <output name="OUTBUF_OUT" num_pins="1"/>
-      <delay_constant max="10e-12" in_port="INBUF_PAD"  out_port="INBUF_OUT"/>
-      <delay_constant max="10e-12" in_port="OUTBUF_IN"  out_port="OUTBUF_OUT"/>
-    </pb_type>
-    <interconnect>
-      <direct name="I" input="IOBUF_VPR.INBUF_OUT" output="IOB33M.I"/>
-      <direct name="T" input="IOB33M.T" output="IOBUF_VPR.OUTBUF_TRI"/>
-      <direct name="O" input="IOB33M.O" output="IOBUF_VPR.OUTBUF_IN"/>
-      <direct name="to_outpad" input="IOBUF_VPR.OUTBUF_OUT" output="outpad.outpad"/>
-      <direct name="to_inpad" input="inpad.inpad" output="IOBUF_VPR.INBUF_PAD"/>
-    </interconnect>
-  </mode>
-  -->
+
+  <xi:include href="../iob33/iob33_modes.pb_type.xml"/>
+
+  <interconnect>
+    <direct name="T_to_IOB33_MODES.T" input="IOB33M.T" output="IOB33_MODES.T"/>
+    <direct name="O_to_IOB33_MODES.O" input="IOB33M.O" output="IOB33_MODES.O"/>
+    <direct name="IBUFDISABLE_to_IOB33_MODES.DIFFI_IN" input="IOB33M.IBUFDISABLE" output="IOB33_MODES.DIFFI_IN"/>
+    <direct name="INTERMDISABLE_to_IOB33_MODES.INTERMDISABLE" input="IOB33M.INTERMDISABLE" output="IOB33_MODES.INTERMDISABLE"/>
+    <direct name="DIFFI_IN_to_IOB33_MODES.DIFFI_IN" input="IOB33M.DIFFI_IN" output="IOB33_MODES.DIFFI_IN"/>
+    <direct name="IOB33_MODES.PADOUT_to_PADOUT" input="IOB33_MODES.PADOUT" output="IOB33M.PADOUT"/>
+    <direct name="IOB33_MODES.T_OUT_to_T_OUT" input="IOB33_MODES.T_OUT" output="IOB33M.T_OUT"/>
+    <direct name="IOB33_MODES.I_to_I" input="IOB33_MODES.I" output="IOB33M.I"/>
+    <direct name="IOB33_MODES.DIFFO_OUT_to_DIFFO_OUT" input="IOB33_MODES.DIFFO_OUT" output="IOB33M.DIFFO_OUT"/>
+    <direct name="IOB33_MODES.O_OUT_to_O_OUT" input="IOB33_MODES.O_OUT" output="IOB33M.O_OUT"/>
+  </interconnect>
+
 </pb_type>

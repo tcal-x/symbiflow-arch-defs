@@ -1863,6 +1863,7 @@ module OBUF (
 
    OUTBUF_VPR _TECHMAP_REPLACE_ (
      .IN(I),
+     //.TRI(1'b0), // Won't route a constant :(
      .OUT(O)
    );
 
