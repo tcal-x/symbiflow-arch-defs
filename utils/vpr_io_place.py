@@ -5,7 +5,10 @@ import re
 import eblif
 import lxml.etree as ET
 
+import sys
+
 IoConstraint = namedtuple('IoConstraint', 'name x y z comment')
+
 
 HEADER_TEMPLATE = """\
 #{name:<{nl}} x   y   z    pcf_line
@@ -52,19 +55,42 @@ class IoPlace(object):
         .place files expect top-level block (cluster) names, not net names, so
         build a mapping from net names to block names from the .net file.
         """
+        print("Enter load_block_names_from_net_file", file=sys.stderr)
         net_xml = ET.parse(net_file)
         net_root = net_xml.getroot()
         self.net_to_block = {}
+        print("Done parsing XML", file=sys.stderr)
 
-        for block in net_root.xpath(
-                "//block[@instance='inpad[0]'] | //block[@instance='outpad[0]']"
-        ):
-            top_block = block.getparent()
-            assert top_block is not None
-            while top_block.getparent() is not net_root:
-                assert top_block is not None
-                top_block = top_block.getparent()
-            self.net_to_block[block.get("name")] = top_block.get("name")
+        for tblock in net_root.xpath("./block"):
+            # print("tblock:",tblock.get("name"), tblock.get("instance"), file=sys.stderr)
+            for ublock in tblock.xpath("./block"):
+                # print("    ublock:",ublock.get("name"), ublock.get("instance"), file=sys.stderr)
+                #for rblock in ublock.xpath(".//block[@instance='lut[0]']"):
+                #    print("        rblock:",rblock.get("name"), rblock.get("instance"), file=sys.stderr)
+                #for rblock in ublock.xpath(".//block[@instance='inpad[0]']"):
+                #    print("        iblock:",rblock.get("name"), rblock.get("instance"), file=sys.stderr)
+                #for rblock in ublock.xpath(".//block[@instance='outpad[0]']"):
+                #    print("        oblock:",rblock.get("name"), rblock.get("instance"), file=sys.stderr)
+                for rblock in ublock.xpath(".//block[@instance='outpad[0]'] | .//block[@instance='inpad[0]']"):
+                    print("        ioblock:",rblock.get("name"), rblock.get("instance"), file=sys.stderr)
+
+        print("--done--", file=sys.stderr)
+
+        #for block in net_root.xpath(
+        #        ".//block[@instance='inpad[0]'] | .//block[@instance='outpad[0]']"
+        #):
+
+        for tblock in net_root.xpath("./block"):
+            for ublock in tblock.xpath("./block"):
+                for block in ublock.xpath(".//block[@instance='outpad[0]'] | .//block[@instance='inpad[0]']"):
+                    print("        ioblock:",block.get("name"), block.get("instance"), file=sys.stderr)
+                    top_block = block.getparent()
+                    assert top_block is not None
+                    while top_block.getparent() is not net_root:
+                        assert top_block is not None
+                        top_block = top_block.getparent()
+                    self.net_to_block[block.get("name")] = top_block.get("name")
+        print("Exit load_block_names_from_net_file", file=sys.stderr)
 
     def constrain_net(self, net_name, loc, comment=""):
         assert len(loc) == 3

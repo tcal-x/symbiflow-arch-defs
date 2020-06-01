@@ -45,15 +45,17 @@ class PlaceConstraints(object):
                 self.block_to_root_block[el.attrib['name']
                                          ] = root_block.attrib['name']
 
-        for attr in net_root.xpath("//attribute[@name='LOC']"):
-            # Get block name
-            top_block = attr.getparent()
-            assert top_block is not None
-            while top_block.getparent() is not net_root:
-                assert top_block is not None
-                top_block = top_block.getparent()
+        for tblock in net_root.xpath("./block"):
+            for ublock in tblock.xpath("./block"):
+                for attr in ublock.xpath(".//attribute[@name='LOC']"):
+                    # Get block name
+                    top_block = attr.getparent()
+                    assert top_block is not None
+                    while top_block.getparent() is not net_root:
+                        assert top_block is not None
+                        top_block = top_block.getparent()
 
-            self.block_to_loc[top_block.get("name")] = attr.text
+                    self.block_to_loc[top_block.get("name")] = attr.text
 
     def constrain_block(self, block_name, loc, comment=""):
         assert len(loc) == 3
